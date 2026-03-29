@@ -6,15 +6,27 @@ type Props = {
     owner: string;
     repo: string;
   }>;
+  searchParams: Promise<{
+    q?: string;
+    page?: string;
+  }>;
 };
 
-export default async function RepoDetailPage({ params }: Props) {
+export default async function RepoDetailPage({ params, searchParams }: Props) {
   const { owner, repo } = await params;
+  const { q, page } = await searchParams;
+
   const repoDetail = await fetchRepository(owner, repo);
+
+  const backParams = new URLSearchParams();
+  if (q) backParams.set("q", q);
+  backParams.set("page", page ?? "1");
+
+  const backHref = `/?${backParams.toString()}`;
 
   return (
     <main className="mx-auto max-w-2xl p-6">
-      <Link href="/" className="text-sm underline">
+      <Link href={backHref} className="text-sm underline">
         ← トップページへ戻る
       </Link>
 

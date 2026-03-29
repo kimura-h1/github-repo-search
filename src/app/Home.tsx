@@ -1,19 +1,24 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { SearchForm } from "@/components/SearchForm";
 import { RepoList } from "@/components/RepoList";
 import { Pagination } from "@/components/Pagination";
 import type { RepoSearchResponse } from "@/lib/github";
+import { useRouter, useSearchParams } from "next/navigation";
 
 export default function HomePage() {
   const [data, setData] = useState<RepoSearchResponse | null>(null);
   const [error, setError] = useState<string>("");
   const [loading, setLoading] = useState(false);
-  const [page, setPage] = useState(1);
-  const [currentQuery, setCurrentQuery] = useState("");
+
+  const router = useRouter();
+  const searchParams = useSearchParams();
 
   const perPage = 10;
+
+  const query = searchParams.get("q") ?? "";
+  const page = Number(searchParams.get("page") ?? "1");
 
   async function searchRepositories(q: string, nextPage = 1) {
     setError("");
@@ -21,6 +26,7 @@ export default function HomePage() {
     const trimmed = q.trim();
     if (!trimmed) {
       setError("キーワードを入力してください");
+      setData(null);
       return;
     }
 
@@ -36,8 +42,6 @@ export default function HomePage() {
       }
 
       setData(body);
-      setPage(nextPage);
-      setCurrentQuery(trimmed);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Unknown error");
       setData(null);
@@ -46,32 +50,54 @@ export default function HomePage() {
     }
   }
 
-  async function handleSearch(q: string) {
-    await searchRepositories(q, 1);
+  useEffect(() => {
+    if (!query) {
+      setData(null);
+      setError("");
+      return;
+    }
+
+    searchRepositories(query, page);
+  }, [query, page]);
+
+  function handleSearch(q: string) {
+    const trimmed = q.trim();
+    if (!trimmed) {
+      setError("キーワードを入力してください");
+      return;
+    }
+
+    router.push(`/?q=${encodeURIComponent(trimmed)}&page=1`);
   }
 
-  async function handlePrevPage() {
+  function handlePrevPage() {
     if (page <= 1) return;
-    await searchRepositories(currentQuery, page - 1);
+    router.push(`/?q=${encodeURIComponent(query)}&page=${page - 1}`);
   }
 
-  async function handleNextPage() {
+  function handleNextPage() {
+    const totalPages = data
+      ? Math.ceil(Math.min(data.total_count, 1000) / perPage)
+      : 0;
+
+    if (page >= totalPages) return;
+    router.push(`/?q=${encodeURIComponent(query)}&page=${page + 1}`);
+  }
+
   const totalPages = data
     ? Math.ceil(Math.min(data.total_count, 1000) / perPage)
     : 0;
 
-  if (page >= totalPages) return;
-  await searchRepositories(currentQuery, page + 1);
-}
-  const totalPages = data
-  ? Math.ceil(Math.min(data.total_count, 1000) / perPage)
-  : 0;
   return (
     <main className="mx-auto max-w-2xl p-6">
       <h1 className="text-2xl font-bold">GitHub Repository Search</h1>
 
       <div className="mt-4">
-        <SearchForm onSearch={handleSearch} isLoading={loading} />
+        <SearchForm
+          onSearch={handleSearch}
+          isLoading={loading}
+          initialQuery={query}
+        />
       </div>
 
       {error && (
@@ -90,7 +116,7 @@ export default function HomePage() {
             総件数: {data.total_count}
           </div>
 
-          <RepoList items={data.items} />
+          <RepoList items={data.items} query={query} page={page} />
 
           <Pagination
             page={page}
