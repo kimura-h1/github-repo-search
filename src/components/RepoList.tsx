@@ -32,7 +32,11 @@ export function RepoList({ items, query = "", page = 1 }: Props) {
               <div className="min-w-0">
                 <div className="truncate font-semibold">{r.full_name}</div>
                 <div className="line-clamp-2 text-sm text-gray-600">
-                  {r.description ?? "No description"}
+                 {r.description
+                  ? r.description.length > 100
+                    ? r.description.slice(0, 100) + "..."
+                    : r.description
+                  : "No description"}
                 </div>
                 <div className="mt-1 text-sm">⭐ {r.stargazers_count}</div>
               </div>
