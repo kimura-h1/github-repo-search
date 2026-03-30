@@ -30,7 +30,9 @@ export function RepoList({ items, query = "", page = 1 }: Props) {
                 className="h-10 w-10 rounded-full"
               />
               <div className="min-w-0">
-                <div className="truncate font-semibold">{r.full_name}</div>
+                 <div className="font-semibold break-all line-clamp-1">
+                    {r.full_name}
+                  </div>
                 <div className="line-clamp-2 text-sm text-gray-600">
                  {r.description
                   ? r.description.length > 100
