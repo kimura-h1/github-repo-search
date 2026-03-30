@@ -95,7 +95,7 @@ src
 
 
 
-## 🤖 AI活用
+##  AI活用
 
 本プロジェクトでは、開発効率と理解の向上を目的としてAIを活用しました。
 
@@ -126,43 +126,24 @@ git clone https://github.com/kimura-h1/github-repo-search.git
 cd github-repo-search
 npm install
 npm run dev
+```
 
 
-
-
-
-## 🔐 環境変数
-
-```md
 ## 環境変数
 
 GitHub APIの利用にはトークンが必要です。  
 以下のように `.env.local` を作成してください。
 
-```bash
 GITHUB_TOKEN=your_token_here
 
 
-
----
-
-## 🧪 テスト
-
-```md
 ## テスト
 
 JestとMSWを使用してテストを実装しています。
-
 ```bash
 npm run test
+```
 
-
-
----
-
-## 📌 今後の改善
-
-```md
 ## 今後の改善
 
 - スケルトンローディングの実装
