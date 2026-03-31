@@ -14,6 +14,28 @@ GitHub APIを利用してリポジトリを検索できるアプリです。
 - Jest
 - MSW
 
+## Next.jsの特徴
+
+本プロジェクトではNext.js（App Router）を採用しています。
+
+- App Routerによるファイルベースルーティング  
+  → `/repos/[owner]/[repo]` のような動的ルーティングを簡潔に実装
+
+- Server Components / Client Componentsの分離  
+  → データ取得とUIの責務を分離し、パフォーマンスを向上
+
+- API Routesの利用  
+  → `/api/github/*` でバックエンド処理を統合
+
+- キャッシュ機構（revalidate）  
+  → GitHub APIのレスポンスをキャッシュし、パフォーマンスと負荷を改善
+
+- 環境変数の安全な管理  
+  → `.env.local` によるトークン管理
+
+- 高速な開発体験  
+  → Fast Refresh により効率的な開発が可能
+
 
 ## 主な機能
 
