@@ -1,5 +1,5 @@
 import { render, screen } from "@testing-library/react";
-import Page from "./page";
+import Page from "../../app/page";
 
 test("トップページが表示される", () => {
   render(<Page />);

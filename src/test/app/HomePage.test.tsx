@@ -1,5 +1,5 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
-import HomePage from "./page";
+import HomePage from "../../app/Home";
 
 describe("HomePage", () => {
   test("初期表示でタイトルが表示される", () => {
