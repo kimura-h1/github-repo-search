@@ -113,6 +113,14 @@ export default function HomePage() {
             総件数: {data.total_count}
           </div>
 
+          <Pagination
+            page={page}
+            totalPages={totalPages}
+            isLoading={loading}
+            onPrev={handlePrevPage}
+            onNext={handleNextPage}
+          />
+
           <RepoList items={data.items} query={query} page={page} />
 
           <Pagination
