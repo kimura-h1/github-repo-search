@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { fetchRepository } from "@/lib/github";
+import { SearchSection } from "@/components/SearchSection";
 
 type Props = {
   params: Promise<{
@@ -26,6 +27,7 @@ export default async function RepoDetailPage({ params, searchParams }: Props) {
 
   return (
     <main className="mx-auto max-w-2xl p-6">
+      <SearchSection />
       <Link href={backHref} className="text-sm underline">
         ← トップページへ戻る
       </Link>

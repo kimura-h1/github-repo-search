@@ -6,6 +6,7 @@ import { RepoList } from "@/components/RepoList";
 import { Pagination } from "@/components/Pagination";
 import type { RepoSearchResponse } from "@/lib/github";
 import { useRouter, useSearchParams } from "next/navigation";
+import { SearchSection } from "@/components/SearchSection";
 
 export default function HomePage() {
   const [data, setData] = useState<RepoSearchResponse | null>(null);
@@ -90,15 +91,11 @@ export default function HomePage() {
 
   return (
     <main className="mx-auto max-w-2xl p-6">
-      <h1 className="text-2xl font-bold">GitHub Repository Search</h1>
-
-      <div className="mt-4">
-        <SearchForm
+        <SearchSection
           onSearch={handleSearch}
           isLoading={loading}
           initialQuery={query}
         />
-      </div>
 
       {error && (
         <p className="mt-4 rounded border border-red-200 bg-red-50 p-3 text-sm text-red-700">
