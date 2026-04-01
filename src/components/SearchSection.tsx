@@ -17,7 +17,7 @@ export function SearchSection({
   return (
     <>
       <h1 className="text-2xl font-bold">
-            <Link href="/" className="hover:underline">
+            <Link href="/" >
                 {title}
             </Link>
             </h1>
