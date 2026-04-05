@@ -11,6 +11,10 @@ export async function GET(req: Request) {
 
   const parsed = SearchQuerySchema.safeParse({ q });
 
+  const language = searchParams.get("language") ?? "";
+  const sort = searchParams.get("sort") ?? "";
+
+
   if (!parsed.success) {
     return NextResponse.json(
       { message: parsed.error.issues[0]?.message ?? "Invalid query" },
@@ -33,7 +37,13 @@ export async function GET(req: Request) {
   }
 
   try {
-    const data = await searchRepositories(parsed.data.q, page, perPage);
+    const data = await searchRepositories({
+      q: parsed.data.q,
+      page,
+      perPage,
+      language,
+      sort,
+    });
     return NextResponse.json(data);
   } catch (e) {
     const msg = e instanceof Error ? e.message : "Unknown error";
