@@ -19,7 +19,7 @@ export function Pagination({
         type="button"
         onClick={onPrev}
         disabled={isLoading || page <= 1}
-        className="rounded border px-4 py-2 disabled:opacity-50"
+        className="rounded border px-3 py-1 disabled:opacity-50"
       >
         前へ
       </button>
@@ -32,7 +32,7 @@ export function Pagination({
         type="button"
         onClick={onNext}
         disabled={isLoading || page >= totalPages}
-        className="rounded border px-4 py-2 disabled:opacity-50"
+        className="rounded border px-3 py-1 disabled:opacity-50"
       >
         次へ
       </button>
