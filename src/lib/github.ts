@@ -1,6 +1,6 @@
 export type RepoSearchItem = {
   id: number;
-  full_name: string; // owner/repo
+  full_name: string;
   html_url: string;
   description: string | null;
   stargazers_count: number;
@@ -18,11 +18,19 @@ export type RepoDetail = {
   full_name: string;
   html_url: string;
   language: string | null;
-  stargazers_count: number; // stars
-  subscribers_count: number; // watchers (actual subscribers)
+  stargazers_count: number;
+  subscribers_count: number;
   forks_count: number;
   open_issues_count: number;
   owner: { login: string; avatar_url: string };
+};
+
+type SearchRepositoriesParams = {
+  q: string;
+  page: number;
+  perPage: number;
+  language?: string;
+  sort?: string;
 };
 
 const GITHUB_API = "https://api.github.com";
@@ -36,15 +44,28 @@ function buildHeaders() {
   return headers;
 }
 
-export async function searchRepositories(
-  q: string,
-  page: number,
-  perPage: number
-): Promise<RepoSearchResponse> {
+export async function searchRepositories({
+  q,
+  page,
+  perPage,
+  language = "",
+  sort = "",
+}: SearchRepositoriesParams): Promise<RepoSearchResponse> {
   const url = new URL(`${GITHUB_API}/search/repositories`);
-  url.searchParams.set("q", q);
+
+  const queryParts = [q];
+
+  if (language) {
+    queryParts.push(`language:${language}`);
+  }
+
+  url.searchParams.set("q", queryParts.join(" "));
   url.searchParams.set("page", String(page));
   url.searchParams.set("per_page", String(perPage));
+
+  if (sort) {
+    url.searchParams.set("sort", sort);
+  }
 
   const res = await fetch(url.toString(), {
     headers: buildHeaders(),
@@ -65,7 +86,10 @@ export async function searchRepositories(
   };
 }
 
-export async function fetchRepository(owner: string, repo: string): Promise<RepoDetail> {
+export async function fetchRepository(
+  owner: string,
+  repo: string
+): Promise<RepoDetail> {
   const res = await fetch(`${GITHUB_API}/repos/${owner}/${repo}`, {
     headers: buildHeaders(),
     next: { revalidate: 60 },
@@ -75,5 +99,6 @@ export async function fetchRepository(owner: string, repo: string): Promise<Repo
     const text = await res.text().catch(() => "");
     throw new Error(`GitHub repo fetch failed: ${res.status} ${text}`);
   }
+
   return res.json();
 }

@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { SearchForm } from "../../components/SearchForm";
+import { SearchForm } from "../../../components/SearchForm";
 
 test("submit triggers onSearch with input value", async () => {
   const user = userEvent.setup();

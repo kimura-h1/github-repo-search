@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { SearchForm } from "@/components/SearchForm";
+import { FilterSortControls } from "@/components/FilterSortControls";
 import { RepoList } from "@/components/RepoList";
 import { Pagination } from "@/components/Pagination";
 import type { RepoSearchResponse } from "@/lib/github";
@@ -15,6 +15,9 @@ export default function HomePage() {
 
   const router = useRouter();
   const searchParams = useSearchParams();
+
+  const language = searchParams.get("language") ?? "";
+  const sort = searchParams.get("sort") ?? "";
 
   const perPage = 10;
 
@@ -33,8 +36,9 @@ export default function HomePage() {
 
     setLoading(true);
     try {
+      
       const res = await fetch(
-        `/api/github/search?q=${encodeURIComponent(trimmed)}&page=${nextPage}&per_page=${perPage}`
+        `/api/github/search?q=${encodeURIComponent(trimmed)}&page=${nextPage}&per_page=${perPage}&language=${encodeURIComponent(language)}&sort=${encodeURIComponent(sort)}`
       );
       const body = await res.json();
 
@@ -52,24 +56,26 @@ export default function HomePage() {
   }
 
   useEffect(() => {
-    if (!query) {
-      setData(null);
-      setError("");
-      return;
-    }
+  if (!query) {
+    setData(null);
+    setError("");
+    return;
+  }
 
-    searchRepositories(query, page);
-  }, [query, page]);
+  searchRepositories(query, page);
+  }, [query, page, language, sort]);
 
   function handleSearch(q: string) {
-    const trimmed = q.trim();
-    if (!trimmed) {
-      setError("キーワードを入力してください");
-      return;
-    }
-
-    router.push(`/?q=${encodeURIComponent(trimmed)}&page=1`);
+  const trimmed = q.trim();
+  if (!trimmed) {
+    setError("キーワードを入力してください");
+    return;
   }
+
+  router.push(
+    `/?q=${encodeURIComponent(trimmed)}&page=1&language=${encodeURIComponent(language)}&sort=${encodeURIComponent(sort)}`
+  );
+}
 
   function handlePrevPage() {
     if (page <= 1) return;
@@ -89,6 +95,18 @@ export default function HomePage() {
     ? Math.ceil(Math.min(data.total_count, 1000) / perPage)
     : 0;
 
+
+    function handleLanguageChange(value: string) {
+  router.push(
+    `/?q=${encodeURIComponent(query)}&page=1&language=${encodeURIComponent(value)}&sort=${encodeURIComponent(sort)}`
+  );
+}
+
+function handleSortChange(value: string) {
+  router.push(
+    `/?q=${encodeURIComponent(query)}&page=1&language=${encodeURIComponent(language)}&sort=${encodeURIComponent(value)}`
+  );
+}
   return (
     <main className="mx-auto max-w-2xl p-6">
         <SearchSection
@@ -96,7 +114,12 @@ export default function HomePage() {
           isLoading={loading}
           initialQuery={query}
         />
-
+        <FilterSortControls
+              language={language}
+              sort={sort}
+              onLanguageChange={handleLanguageChange}
+              onSortChange={handleSortChange}
+            />
       {error && (
         <p className="mt-4 rounded border border-red-200 bg-red-50 p-3 text-sm text-red-700">
           {error}
