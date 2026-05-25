@@ -17,10 +17,8 @@ export function SearchSection({
   return (
     <>
       <h1 className="text-2xl font-bold">
-            <Link href="/" >
-                {title}
-            </Link>
-            </h1>
+        <Link href="/">{title}</Link>
+      </h1>
 
       {onSearch && (
         <div className="mt-4">

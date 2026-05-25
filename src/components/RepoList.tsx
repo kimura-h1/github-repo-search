@@ -1,5 +1,3 @@
-"use client";
-
 import Link from "next/link";
 import type { RepoSearchItem } from "@/lib/github";
 
@@ -34,11 +32,7 @@ export function RepoList({ items, query = "", page = 1 }: Props) {
                     {r.full_name}
                   </div>
                 <div className="line-clamp-2 text-sm text-gray-600">
-                 {r.description
-                  ? r.description.length > 100
-                    ? r.description.slice(0, 100) + "..."
-                    : r.description
-                  : "No description"}
+                  {r.description ?? "No description"}
                 </div>
                 <div className="mt-1 text-sm">⭐ {r.stargazers_count}</div>
               </div>
