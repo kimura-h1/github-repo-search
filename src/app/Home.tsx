@@ -36,7 +36,6 @@ export default function HomePage() {
 
     setLoading(true);
     try {
-      
       const res = await fetch(
         `/api/github/search?q=${encodeURIComponent(trimmed)}&page=${nextPage}&per_page=${perPage}&language=${encodeURIComponent(language)}&sort=${encodeURIComponent(sort)}`
       );
@@ -56,30 +55,32 @@ export default function HomePage() {
   }
 
   useEffect(() => {
-  if (!query) {
-    setData(null);
-    setError("");
-    return;
-  }
+    if (!query) {
+      setData(null);
+      setError("");
+      return;
+    }
 
-  searchRepositories(query, page);
+    searchRepositories(query, page);
   }, [query, page, language, sort]);
 
   function handleSearch(q: string) {
-  const trimmed = q.trim();
-  if (!trimmed) {
-    setError("キーワードを入力してください");
-    return;
-  }
+    const trimmed = q.trim();
+    if (!trimmed) {
+      setError("キーワードを入力してください");
+      return;
+    }
 
-  router.push(
-    `/?q=${encodeURIComponent(trimmed)}&page=1&language=${encodeURIComponent(language)}&sort=${encodeURIComponent(sort)}`
-  );
-}
+    router.push(
+      `/?q=${encodeURIComponent(trimmed)}&page=1&language=${encodeURIComponent(language)}&sort=${encodeURIComponent(sort)}`
+    );
+  }
 
   function handlePrevPage() {
     if (page <= 1) return;
-    router.push(`/?q=${encodeURIComponent(query)}&page=${page - 1}`);
+    router.push(
+      `/?q=${encodeURIComponent(query)}&page=${page - 1}&language=${encodeURIComponent(language)}&sort=${encodeURIComponent(sort)}`
+    );
   }
 
   function handleNextPage() {
@@ -88,7 +89,9 @@ export default function HomePage() {
       : 0;
 
     if (page >= totalPages) return;
-    router.push(`/?q=${encodeURIComponent(query)}&page=${page + 1}`);
+    router.push(
+      `/?q=${encodeURIComponent(query)}&page=${page + 1}&language=${encodeURIComponent(language)}&sort=${encodeURIComponent(sort)}`
+    );
   }
 
   const totalPages = data
@@ -96,17 +99,17 @@ export default function HomePage() {
     : 0;
 
 
-    function handleLanguageChange(value: string) {
-  router.push(
-    `/?q=${encodeURIComponent(query)}&page=1&language=${encodeURIComponent(value)}&sort=${encodeURIComponent(sort)}`
-  );
-}
+  function handleLanguageChange(value: string) {
+    router.push(
+      `/?q=${encodeURIComponent(query)}&page=1&language=${encodeURIComponent(value)}&sort=${encodeURIComponent(sort)}`
+    );
+  }
 
-function handleSortChange(value: string) {
-  router.push(
-    `/?q=${encodeURIComponent(query)}&page=1&language=${encodeURIComponent(language)}&sort=${encodeURIComponent(value)}`
-  );
-}
+  function handleSortChange(value: string) {
+    router.push(
+      `/?q=${encodeURIComponent(query)}&page=1&language=${encodeURIComponent(language)}&sort=${encodeURIComponent(value)}`
+    );
+  }
   return (
     <main className="mx-auto max-w-2xl p-6">
         <SearchSection
